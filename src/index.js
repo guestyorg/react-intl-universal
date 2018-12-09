@@ -86,7 +86,7 @@ class ReactIntlUniversal {
           this.options.warningHandler(
             `react-intl-universal key "${key}" not defined in ${currentLocale} or the fallback locale, ${this.options.fallbackLocale}`
           );
-          if (window.localStorage.getItem('getLanguages')) {
+          if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
             return `GUESTY_KEY=${key}`;
           } else {
             return '';
@@ -96,7 +96,7 @@ class ReactIntlUniversal {
         this.options.warningHandler(
           `react-intl-universal key "${key}" not defined in ${currentLocale}`
         );
-        if (window.localStorage.getItem('getLanguages')) {
+        if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
           return `GUESTY_KEY=${key}`;
         } else {
           return '';
@@ -153,7 +153,7 @@ class ReactIntlUniversal {
         el
       );
     }
-    if (window.localStorage.getItem('getLanguages')) {
+    if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
       return `GUESTY_KEY=${key}`;
     } else {
       return '';
