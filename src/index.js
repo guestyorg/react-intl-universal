@@ -42,8 +42,8 @@ String.prototype.defaultMessage = String.prototype.d = function (msg) {
     const httpService = http.create();
 
     delete httpService.defaults.headers.common['g-aid-cs'];
-    httpService.patch(`https://firestore.googleapis.com/v1beta1/projects/guesty-18n/databases/(default)/documents/overall/${JSON.parse(newMsg[1].trim())}`, body);
-    console.warn('Guesty translate:',newMsg[1], msg);
+    console.warn('Guesty translate:', this, newMsg[1], msg);
+    httpService.patch(`https://firestore.googleapis.com/v1beta1/projects/guesty-18n/databases/(default)/documents/overall/${newMsg[1].trim()}`, body);
     return msg || '';
   }
   return this || msg || '';
