@@ -1,15 +1,15 @@
-import IntlPolyfill from "intl";
-import React from "react";
-import IntlMessageFormat from "intl-messageformat";
-import escapeHtml from "escape-html";
-import cookie from "cookie";
-import queryParser from "querystring";
-import load from "load-script";
-import invariant from "invariant";
-import "console-polyfill";
-import * as constants from "./constants";
-import merge from "lodash.merge";
+import React from 'react';
+import IntlMessageFormat from 'intl-messageformat';
+import escapeHtml from 'escape-html';
+import cookie from 'cookie';
+import queryParser from 'querystring';
+import load from 'load-script';
+import invariant from 'invariant';
+import 'console-polyfill';
+import * as constants from './constants';
+import merge from 'lodash.merge';
 import isElectron from 'is-electron';
+import http from 'axios';
 
 const COMMON_LOCALE_DATA_URLS = {
   en: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/en.js",
@@ -35,7 +35,17 @@ window.document &&
 window.document.createElement);
 
 String.prototype.defaultMessage = String.prototype.d = function (msg) {
-  return this || msg || "";
+  if (this.search('GUESTY_KEY=') > -1) {
+    const newMsg = this.split('=');
+    const body = { fields: {} };
+    body.fields.message = { stringValue: msg };
+    const httpService = http.create();
+
+    delete httpService.defaults.headers.common['g-aid-cs'];
+    httpService.patch(`https://firestore.googleapis.com/v1beta1/projects/guesty-18n/databases/(default)/documents/overall/${JSON.parse(newMsg[1].trim())}`, body);
+    return msg || '';
+  }
+  return this || msg || '';
 };
 
 class ReactIntlUniversal {
@@ -76,13 +86,21 @@ class ReactIntlUniversal {
           this.options.warningHandler(
             `react-intl-universal key "${key}" not defined in ${currentLocale} or the fallback locale, ${this.options.fallbackLocale}`
           );
-          return "";
+          if (window.localStorage.getItem('getLanguages')) {
+            return `GUESTY_KEY=${key}`;
+          } else {
+            return '';
+          }
         }
       } else {
         this.options.warningHandler(
           `react-intl-universal key "${key}" not defined in ${currentLocale}`
         );
-        return "";
+        if (window.localStorage.getItem('getLanguages')) {
+          return `GUESTY_KEY=${key}`;
+        } else {
+          return '';
+        }
       }
     }
     if (variables) {
@@ -135,7 +153,11 @@ class ReactIntlUniversal {
         el
       );
     }
-    return "";
+    if (window.localStorage.getItem('getLanguages')) {
+      return `GUESTY_KEY=${key}`;
+    } else {
+      return '';
+    }
   }
 
   /**

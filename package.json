@@ -1,6 +1,6 @@
 {
-  "name": "react-intl-universal",
-  "version": "1.15.3",
+  "name": "@guestyci/react-intl-universal",
+  "version": "1.0.1",
   "description": "Internationalize React apps. Not only for React.Component but also for Vanilla JS.",
   "keywords": [
     "intl",
@@ -27,6 +27,7 @@
   "author": "chiawei.tcw@alibaba-inc.com",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "axios": "^0.18.0",
     "console-polyfill": "^0.3.0",
     "cookie": "^0.3.1",
     "escape-html": "^1.0.3",
@@ -51,11 +52,11 @@
     "babel-preset-es2015-rollup": "^3.0.0",
     "jest": "^19.0.2",
     "jest-cli": "^19.0.2",
+    "react": "^15.4.2",
     "rimraf": "^2.4.2",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.3.9",
-    "rollup-plugin-commonjs": "^7.0.0",
-    "react": "^15.4.2"
+    "rollup-plugin-commonjs": "^7.0.0"
   },
   "babel": {
     "presets": [

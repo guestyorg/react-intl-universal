@@ -29,7 +29,8 @@ export default {
         'react',
         'console-polyfill',
         'lodash.merge',
-        'is-electron'
+        'is-electron',
+        'axios'
     ],
     plugins : [babel({exclude: 'node_modules/**', presets: ['es2015-rollup']})]
 };
