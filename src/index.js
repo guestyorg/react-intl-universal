@@ -228,7 +228,7 @@ class ReactIntlUniversal {
     if (this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }) && window && window.localStorage) {
       console.warn('changing getLanguages to ', this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }));
       window.localStorage.setItem('getLanguages', this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }));
-    } else {
+    } else if(window && window.localStorage) {
       window.localStorage.removeItem('getLanguages');
     }
 
