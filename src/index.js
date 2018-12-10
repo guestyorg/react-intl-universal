@@ -220,9 +220,11 @@ class ReactIntlUniversal {
       this.options.formats,
       constants.defaultFormats
     );
+    
+    console.warn('urlLang', this.getLocaleFromURL());
 
     return new Promise((resolve, reject) => {
-
+      
       const lang = this.options.currentLocale.split('-')[0].split('_')[0];
       const langUrl = this.options.commonLocaleDataUrls[lang];
       if (isBrowser) {
