@@ -221,6 +221,7 @@ class ReactIntlUniversal {
     );
 
     if (this.getLocaleFromURL({ urlLocaleKey: 'lang' }) && window && window.localStorage) {
+      console.warn('changing lang to ', this.getLocaleFromURL({ urlLocaleKey: 'lang' }));
       window.localStorage.setItem('lang', this.getLocaleFromURL({ urlLocaleKey: 'lang' }));
     }
 
