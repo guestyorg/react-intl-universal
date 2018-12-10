@@ -225,6 +225,13 @@ class ReactIntlUniversal {
       window.localStorage.setItem('lang', this.getLocaleFromURL({ urlLocaleKey: 'lang' }));
     }
 
+    if (this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }) && window && window.localStorage) {
+      console.warn('changing getLanguages to ', this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }));
+      window.localStorage.setItem('getLanguages', this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }));
+    } else {
+      window.localStorage.removeItem('getLanguages');
+    }
+
     return new Promise((resolve, reject) => {
 
       const lang = this.options.currentLocale.split('-')[0].split('_')[0];
