@@ -12,27 +12,26 @@ import isElectron from 'is-electron';
 import http from 'axios';
 
 const COMMON_LOCALE_DATA_URLS = {
-  en: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/en.js",
-  zh: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/zh.js",
-  fr: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/fr.js",
-  fa: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/fa.js",
-  ja: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ja.js",
-  de: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/de.js",
-  es: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/es.js",
-  ko: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ko.js",
-  pt: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/pt.js",
-  it: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/it.js",
-  ru: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ru.js",
-  pl: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/pl.js",
-  nl: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/nl.js",
-  sv: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/sv.js",
-  tr: "https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/tr.js",
+  en: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/en.js',
+  zh: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/zh.js',
+  fr: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/fr.js',
+  fa: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/fa.js',
+  ja: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ja.js',
+  de: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/de.js',
+  es: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/es.js',
+  ko: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ko.js',
+  pt: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/pt.js',
+  it: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/it.js',
+  ru: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ru.js',
+  pl: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/pl.js',
+  nl: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/nl.js',
+  sv: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/sv.js',
+  tr: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/tr.js',
 };
 
-
-const isBrowser = !isElectron() &&  !!(typeof window !== 'undefined' &&
-window.document &&
-window.document.createElement);
+const isBrowser = !isElectron() && !!(typeof window !== 'undefined' &&
+    window.document &&
+    window.document.createElement);
 
 String.prototype.defaultMessage = String.prototype.d = function (msg) {
   if (this.search('GUESTY_KEY=') > -1) {
@@ -70,14 +69,14 @@ class ReactIntlUniversal {
    * @returns {string} message
    */
   get(key, variables) {
-    invariant(key, "key is required");
+    invariant(key, 'key is required');
     const { locales, currentLocale, formats } = this.options;
 
     if (!locales || !locales[currentLocale]) {
       this.options.warningHandler(
-        `react-intl-universal locales data "${currentLocale}" not exists.`
+          `react-intl-universal locales data "${currentLocale}" not exists.`,
       );
-      return "";
+      return '';
     }
     let msg = this.getDescendantProp(locales[currentLocale], key);
     if (msg == null) {
@@ -85,7 +84,7 @@ class ReactIntlUniversal {
         msg = this.getDescendantProp(locales[this.options.fallbackLocale], key);
         if (msg == null) {
           this.options.warningHandler(
-            `react-intl-universal key "${key}" not defined in ${currentLocale} or the fallback locale, ${this.options.fallbackLocale}`
+              `react-intl-universal key "${key}" not defined in ${currentLocale} or the fallback locale, ${this.options.fallbackLocale}`,
           );
           if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
             return `GUESTY_KEY=${key}`;
@@ -95,7 +94,7 @@ class ReactIntlUniversal {
         }
       } else {
         this.options.warningHandler(
-          `react-intl-universal key "${key}" not defined in ${currentLocale}`
+            `react-intl-universal key "${key}" not defined in ${currentLocale}`,
         );
         if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
           return `GUESTY_KEY=${key}`;
@@ -110,10 +109,10 @@ class ReactIntlUniversal {
       for (let i in variables) {
         let value = variables[i];
         if (
-          this.options.escapeHtml === true &&
-          (typeof value === "string" || value instanceof String) &&
-          value.indexOf("<") >= 0 &&
-          value.indexOf(">") >= 0
+            this.options.escapeHtml === true &&
+            (typeof value === 'string' || value instanceof String) &&
+            value.indexOf('<') >= 0 &&
+            value.indexOf('>') >= 0
         ) {
           value = escapeHtml(value);
         }
@@ -126,8 +125,8 @@ class ReactIntlUniversal {
       return msgFormatter.format(variables);
     } catch (err) {
       this.options.warningHandler(
-        `react-intl-universal format message failed for key='${key}'.`,
-        err.message
+          `react-intl-universal format message failed for key='${key}'.`,
+          err.message,
       );
       return msg;
     }
@@ -138,20 +137,20 @@ class ReactIntlUniversal {
    * @param {string} key The string representing key in locale data file
    * @param {Object} variables Variables in message
    * @returns {React.Element} message
-  */
+   */
   getHTML(key, variables) {
     let msg = this.get(key, variables);
     if (msg) {
-      const el = React.createElement("span", {
+      const el = React.createElement('span', {
         dangerouslySetInnerHTML: {
-          __html: msg
-        }
+          __html: msg,
+        },
       });
       // when key exists, it should still return element if there's defaultMessage() after getHTML()
       const defaultMessage = () => el;
       return Object.assign(
-        { defaultMessage: defaultMessage, d: defaultMessage },
-        el
+          { defaultMessage: defaultMessage, d: defaultMessage },
+          el,
       );
     }
     if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
@@ -168,7 +167,7 @@ class ReactIntlUniversal {
    * @param {string} options.defaultMessage
    * @param {Object} variables Variables in message
    * @returns {string} message
-  */
+   */
   formatMessage(messageDescriptor, variables) {
     const { id, defaultMessage } = messageDescriptor;
     return this.get(id, variables).defaultMessage(defaultMessage);
@@ -181,7 +180,7 @@ class ReactIntlUniversal {
    * @param {React.Element} options.defaultMessage
    * @param {Object} variables Variables in message
    * @returns {React.Element} message
-  */
+   */
   formatHTMLMessage(messageDescriptor, variables) {
     const { id, defaultMessage } = messageDescriptor;
     return this.getHTML(id, variables).defaultMessage(defaultMessage);
@@ -196,9 +195,9 @@ class ReactIntlUniversal {
    */
   determineLocale(options = {}) {
     return (
-      this.getLocaleFromURL(options) ||
-      this.getLocaleFromCookie(options) ||
-      this.getLocaleFromBrowser()
+        this.getLocaleFromURL(options) ||
+        this.getLocaleFromCookie(options) ||
+        this.getLocaleFromBrowser()
     );
   }
 
@@ -210,21 +209,23 @@ class ReactIntlUniversal {
    * @returns {Promise}
    */
   init(options = {}) {
-    invariant(options.currentLocale, "options.currentLocale is required");
-    invariant(options.locales, "options.locales is required");
+    invariant(options.currentLocale, 'options.currentLocale is required');
+    invariant(options.locales, 'options.locales is required');
 
     Object.assign(this.options, options);
 
     this.options.formats = Object.assign(
-      {},
-      this.options.formats,
-      constants.defaultFormats
+        {},
+        this.options.formats,
+        constants.defaultFormats,
     );
-    
-    console.warn('urlLang', this.getLocaleFromURL());
+
+    if (this.getLocaleFromURL({ urlLocaleKey: 'lang' }) && window && window.localStorage) {
+      window.localStorage.setItem('lang', this.getLocaleFromURL({ urlLocaleKey: 'lang' }));
+    }
 
     return new Promise((resolve, reject) => {
-      
+
       const lang = this.options.currentLocale.split('-')[0].split('_')[0];
       const langUrl = this.options.commonLocaleDataUrls[lang];
       if (isBrowser) {
@@ -272,7 +273,7 @@ class ReactIntlUniversal {
   getLocaleFromURL(options) {
     const { urlLocaleKey } = options;
     if (urlLocaleKey) {
-      let query = location.search.split("?");
+      let query = location.search.split('?');
       if (query.length >= 2) {
         let params = queryParser.parse(query[1]);
         return params && params[urlLocaleKey];
@@ -286,7 +287,7 @@ class ReactIntlUniversal {
       return locale[key];
     }
 
-    const msg = key.split(".").reduce(function (a, b) {
+    const msg = key.split('.').reduce(function (a, b) {
       return (a != undefined) ? a[b] : a;
     }, locale);
 
