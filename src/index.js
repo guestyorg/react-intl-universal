@@ -13,21 +13,21 @@ import isElectron from 'is-electron';
 import http from 'axios';
 
 const COMMON_LOCALE_DATA_URLS = {
-  en: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/en.js',
-  zh: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/zh.js',
-  fr: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/fr.js',
-  fa: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/fa.js',
-  ja: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ja.js',
-  de: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/de.js',
-  es: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/es.js',
-  ko: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ko.js',
-  pt: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/pt.js',
-  it: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/it.js',
-  ru: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/ru.js',
-  pl: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/pl.js',
-  nl: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/nl.js',
-  sv: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/sv.js',
-  tr: 'https://g.alicdn.com/react-intl-universal/locale-data/1.0.0/tr.js',
+  en: 'https://s3.amazonaws.com/guesty-frontend-production/lang/en.js',
+  zh: 'https://s3.amazonaws.com/guesty-frontend-production/lang/zh.js',
+  fr: 'https://s3.amazonaws.com/guesty-frontend-production/lang/fr.js',
+  fa: 'https://s3.amazonaws.com/guesty-frontend-production/lang/fa.js',
+  ja: 'https://s3.amazonaws.com/guesty-frontend-production/lang/ja.js',
+  de: 'https://s3.amazonaws.com/guesty-frontend-production/lang/de.js',
+  es: 'https://s3.amazonaws.com/guesty-frontend-production/lang/es.js',
+  ko: 'https://s3.amazonaws.com/guesty-frontend-production/lang/ko.js',
+  pt: 'https://s3.amazonaws.com/guesty-frontend-production/lang/pt.js',
+  it: 'https://s3.amazonaws.com/guesty-frontend-production/lang/it.js',
+  ru: 'https://s3.amazonaws.com/guesty-frontend-production/lang/ru.js',
+  pl: 'https://s3.amazonaws.com/guesty-frontend-production/lang/pl.js',
+  nl: 'https://s3.amazonaws.com/guesty-frontend-production/lang/nl.js',
+  sv: 'https://s3.amazonaws.com/guesty-frontend-production/lang/sv.js',
+  tr: 'https://s3.amazonaws.com/guesty-frontend-production/lang/tr.js',
 };
 
 const isBrowser = !isElectron() && !!(typeof window !== 'undefined' &&
