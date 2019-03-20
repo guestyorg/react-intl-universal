@@ -13,21 +13,21 @@ import isElectron from 'is-electron';
 import http from 'axios';
 
 const COMMON_LOCALE_DATA_URLS = {
-  en: 'https://s3.amazonaws.com/guesty-frontend-production/lang/en.js',
-  zh: 'https://s3.amazonaws.com/guesty-frontend-production/lang/zh.js',
-  fr: 'https://s3.amazonaws.com/guesty-frontend-production/lang/fr.js',
-  fa: 'https://s3.amazonaws.com/guesty-frontend-production/lang/fa.js',
-  ja: 'https://s3.amazonaws.com/guesty-frontend-production/lang/ja.js',
-  de: 'https://s3.amazonaws.com/guesty-frontend-production/lang/de.js',
-  es: 'https://s3.amazonaws.com/guesty-frontend-production/lang/es.js',
-  ko: 'https://s3.amazonaws.com/guesty-frontend-production/lang/ko.js',
-  pt: 'https://s3.amazonaws.com/guesty-frontend-production/lang/pt.js',
-  it: 'https://s3.amazonaws.com/guesty-frontend-production/lang/it.js',
-  ru: 'https://s3.amazonaws.com/guesty-frontend-production/lang/ru.js',
-  pl: 'https://s3.amazonaws.com/guesty-frontend-production/lang/pl.js',
-  nl: 'https://s3.amazonaws.com/guesty-frontend-production/lang/nl.js',
-  sv: 'https://s3.amazonaws.com/guesty-frontend-production/lang/sv.js',
-  tr: 'https://s3.amazonaws.com/guesty-frontend-production/lang/tr.js',
+  en: 'https://s3.amazonaws.com/guesty-frontend-production/localization/en.js',
+  zh: 'https://s3.amazonaws.com/guesty-frontend-production/localization/zh.js',
+  fr: 'https://s3.amazonaws.com/guesty-frontend-production/localization/fr.js',
+  fa: 'https://s3.amazonaws.com/guesty-frontend-production/localization/fa.js',
+  ja: 'https://s3.amazonaws.com/guesty-frontend-production/localization/ja.js',
+  de: 'https://s3.amazonaws.com/guesty-frontend-production/localization/de.js',
+  es: 'https://s3.amazonaws.com/guesty-frontend-production/localization/es.js',
+  ko: 'https://s3.amazonaws.com/guesty-frontend-production/localization/ko.js',
+  pt: 'https://s3.amazonaws.com/guesty-frontend-production/localization/pt.js',
+  it: 'https://s3.amazonaws.com/guesty-frontend-production/localization/it.js',
+  ru: 'https://s3.amazonaws.com/guesty-frontend-production/localization/ru.js',
+  pl: 'https://s3.amazonaws.com/guesty-frontend-production/localization/pl.js',
+  nl: 'https://s3.amazonaws.com/guesty-frontend-production/localization/nl.js',
+  sv: 'https://s3.amazonaws.com/guesty-frontend-production/localization/sv.js',
+  tr: 'https://s3.amazonaws.com/guesty-frontend-production/localization/tr.js',
 };
 
 const isBrowser = !isElectron() && !!(typeof window !== 'undefined' &&
