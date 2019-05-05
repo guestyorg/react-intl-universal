@@ -12,29 +12,22 @@ import merge from 'lodash.merge';
 import isElectron from 'is-electron';
 import http from 'axios';
 
-const COMMON_LOCALE_DATA_URLS = {
-  en: 'https://s3.amazonaws.com/guesty-frontend-production/localization/en.js',
-  zh: 'https://s3.amazonaws.com/guesty-frontend-production/localization/zh.js',
-  fr: 'https://s3.amazonaws.com/guesty-frontend-production/localization/fr.js',
-  fa: 'https://s3.amazonaws.com/guesty-frontend-production/localization/fa.js',
-  ja: 'https://s3.amazonaws.com/guesty-frontend-production/localization/ja.js',
-  de: 'https://s3.amazonaws.com/guesty-frontend-production/localization/de.js',
-  es: 'https://s3.amazonaws.com/guesty-frontend-production/localization/es.js',
-  ko: 'https://s3.amazonaws.com/guesty-frontend-production/localization/ko.js',
-  pt: 'https://s3.amazonaws.com/guesty-frontend-production/localization/pt.js',
-  it: 'https://s3.amazonaws.com/guesty-frontend-production/localization/it.js',
-  ru: 'https://s3.amazonaws.com/guesty-frontend-production/localization/ru.js',
-  pl: 'https://s3.amazonaws.com/guesty-frontend-production/localization/pl.js',
-  nl: 'https://s3.amazonaws.com/guesty-frontend-production/localization/nl.js',
-  sv: 'https://s3.amazonaws.com/guesty-frontend-production/localization/sv.js',
-  tr: 'https://s3.amazonaws.com/guesty-frontend-production/localization/tr.js',
-};
+const localeDataURL = locale =>
+  `https://s3.amazonaws.com/guesty-frontend-production/localization/${locale}.js`;
 
-const isBrowser = !isElectron() && !!(typeof window !== 'undefined' &&
+// const localeJsonURL = lang =>
+//   `https://guesty-frontend.s3.amazonaws.com/production/locales/${lang}.json`;
+const localeJsonURL = lang => `http://localhost:8000/?lang=${lang}`;
+
+const isBrowser =
+  !isElectron() &&
+  !!(
+    typeof window !== 'undefined' &&
     window.document &&
-    window.document.createElement);
+    window.document.createElement
+  );
 
-String.prototype.defaultMessage = String.prototype.d = function (msg) {
+String.prototype.defaultMessage = String.prototype.d = function(msg) {
   if (this.search('GUESTY_KEY=') > -1) {
     const newMsg = this.split('=');
     const body = { fields: {} };
@@ -43,7 +36,10 @@ String.prototype.defaultMessage = String.prototype.d = function (msg) {
 
     delete httpService.defaults.headers.common['g-aid-cs'];
     console.warn('Guesty translate:', this, newMsg[1], msg);
-    httpService.patch(`https://firestore.googleapis.com/v1beta1/projects/guesty-18n/databases/(default)/documents/overall/${newMsg[1].trim()}`, body);
+    httpService.patch(
+      `https://firestore.googleapis.com/v1beta1/projects/guesty-18n/databases/(default)/documents/overall/${newMsg[1].trim()}`,
+      body,
+    );
     return msg || '';
   }
   return this || msg || '';
@@ -52,14 +48,20 @@ String.prototype.defaultMessage = String.prototype.d = function (msg) {
 class ReactIntlUniversal {
   constructor() {
     this.options = {
-      currentLocale: null, // Current locale such as 'en-US'
-      urlLocaleKey: null, // URL's query Key to determine locale. Example: if URL=http://localhost?lang=en-US, then set it 'lang'
-      cookieLocaleKey: null, // Cookie's Key to determine locale. Example: if cookie=lang:en-US, then set it 'lang'
-      locales: {}, // app locale data like {"en-US":{"key1":"value1"},"zh-CN":{"key1":"值1"}}
-      warningHandler: console.warn.bind(console), // ability to accumulate missing messages using third party services like Sentry
-      escapeHtml: true, // disable escape html in variable mode
-      commonLocaleDataUrls: COMMON_LOCALE_DATA_URLS,
-      fallbackLocale: null, // Locale to use if a key is not found in the current locale
+      // Current locale such as 'en-US'
+      currentLocale: null,
+      // URL's query Key to determine locale. Example: if URL=http://localhost?lang=en-US, then set it 'lang'
+      urlLocaleKey: null,
+      // Cookie's Key to determine locale. Example: if cookie=lang:en-US, then set it 'lang'
+      cookieLocaleKey: null,
+      // app locale data like {"en-US":{"key1":"value1"},"zh-CN":{"key1":"值1"}}
+      locales: {},
+      // ability to accumulate missing messages using third party services like Sentry
+      warningHandler: console.warn.bind(console),
+      // disable escape html in variable mode
+      escapeHtml: true,
+      // Locale to use if a key is not found in the current locale
+      fallbackLocale: null,
     };
   }
 
@@ -75,19 +77,28 @@ class ReactIntlUniversal {
 
     if (!locales || !locales[currentLocale]) {
       this.options.warningHandler(
-          `react-intl-universal locales data "${currentLocale}" not exists.`,
+        `react-intl-universal locales data "${currentLocale}" does not exist.`,
       );
+
       return '';
     }
+
     let msg = this.getDescendantProp(locales[currentLocale], key);
+
     if (msg == null) {
       if (this.options.fallbackLocale) {
         msg = this.getDescendantProp(locales[this.options.fallbackLocale], key);
         if (msg == null) {
           this.options.warningHandler(
-              `react-intl-universal key "${key}" not defined in ${currentLocale} or the fallback locale, ${this.options.fallbackLocale}`,
+            `react-intl-universal key "${key}" not defined in ${currentLocale} or the fallback locale, ${
+              this.options.fallbackLocale
+            }`,
           );
-          if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
+          if (
+            window &&
+            window.localStorage &&
+            window.localStorage.getItem('getLanguages')
+          ) {
             return `GUESTY_KEY=${key}`;
           } else {
             return '';
@@ -95,9 +106,13 @@ class ReactIntlUniversal {
         }
       } else {
         this.options.warningHandler(
-            `react-intl-universal key "${key}" not defined in ${currentLocale}`,
+          `react-intl-universal key "${key}" not defined in ${currentLocale}`,
         );
-        if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
+        if (
+          window &&
+          window.localStorage &&
+          window.localStorage.getItem('getLanguages')
+        ) {
           return `GUESTY_KEY=${key}`;
         } else {
           return '';
@@ -110,10 +125,10 @@ class ReactIntlUniversal {
       for (let i in variables) {
         let value = variables[i];
         if (
-            this.options.escapeHtml === true &&
-            (typeof value === 'string' || value instanceof String) &&
-            value.indexOf('<') >= 0 &&
-            value.indexOf('>') >= 0
+          this.options.escapeHtml === true &&
+          (typeof value === 'string' || value instanceof String) &&
+          value.indexOf('<') >= 0 &&
+          value.indexOf('>') >= 0
         ) {
           value = escapeHtml(value);
         }
@@ -126,8 +141,8 @@ class ReactIntlUniversal {
       return msgFormatter.format(variables);
     } catch (err) {
       this.options.warningHandler(
-          `react-intl-universal format message failed for key='${key}'.`,
-          err.message,
+        `react-intl-universal format message failed for key='${key}'.`,
+        err.message,
       );
       return msg;
     }
@@ -150,11 +165,15 @@ class ReactIntlUniversal {
       // when key exists, it should still return element if there's defaultMessage() after getHTML()
       const defaultMessage = () => el;
       return Object.assign(
-          { defaultMessage: defaultMessage, d: defaultMessage },
-          el,
+        { defaultMessage: defaultMessage, d: defaultMessage },
+        el,
       );
     }
-    if (window && window.localStorage && window.localStorage.getItem('getLanguages')) {
+    if (
+      window &&
+      window.localStorage &&
+      window.localStorage.getItem('getLanguages')
+    ) {
       return `GUESTY_KEY=${key}`;
     } else {
       return '';
@@ -196,9 +215,9 @@ class ReactIntlUniversal {
    */
   determineLocale(options = {}) {
     return (
-        this.getLocaleFromURL(options) ||
-        this.getLocaleFromCookie(options) ||
-        this.getLocaleFromBrowser()
+      this.getLocaleFromURL(options) ||
+      this.getLocaleFromCookie(options) ||
+      this.getLocaleFromBrowser()
     );
   }
 
@@ -211,50 +230,66 @@ class ReactIntlUniversal {
    */
   init(options = {}) {
     invariant(options.currentLocale, 'options.currentLocale is required');
-    invariant(options.locales, 'options.locales is required');
-
     Object.assign(this.options, options);
 
     this.options.formats = Object.assign(
-        {},
-        this.options.formats,
-        constants.defaultFormats,
+      {},
+      this.options.formats,
+      constants.defaultFormats,
     );
 
-    if (this.getLocaleFromURL({ urlLocaleKey: 'lang' }) && window && window.localStorage) {
-      console.warn('changing lang to ', this.getLocaleFromURL({ urlLocaleKey: 'lang' }));
-      window.localStorage.setItem('lang', this.getLocaleFromURL({ urlLocaleKey: 'lang' }));
+    const langURL = this.getLocaleFromURL({ urlLocaleKey: 'lang' });
+    const getLanguagesURL = this.getLocaleFromURL({
+      urlLocaleKey: 'getLanguages',
+    });
+
+    if (langURL && window && window.localStorage) {
+      console.warn('changing lang to ', langURL);
+      window.localStorage.setItem('lang', langURL);
     }
 
-    if (this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }) && window && window.localStorage) {
-      console.warn('changing getLanguages to ', this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }));
-      window.localStorage.setItem('getLanguages', this.getLocaleFromURL({ urlLocaleKey: 'getLanguages' }));
-    } else if(window && window.localStorage) {
+    if (getLanguagesURL && window && window.localStorage) {
+      console.warn('changing getLanguages to ', getLanguagesURL);
+      window.localStorage.setItem('getLanguages', getLanguagesURL);
+    } else if (window && window.localStorage) {
       window.localStorage.removeItem('getLanguages');
     }
 
-    return new Promise((resolve, reject) => {
+    const lang = this.options.currentLocale;
+    const locale = lang.split('-')[0].split('_')[0];
 
-      const lang = this.options.currentLocale.split('-')[0].split('_')[0];
-      const langUrl = this.options.commonLocaleDataUrls[lang];
+    const scriptPromise = new Promise((resolve, reject) => {
+      const localeURL = localeDataURL(locale);
       if (isBrowser) {
-        if (langUrl) {
-          load(langUrl, (err, script) => {
+        if (localeURL) {
+          load(localeURL, (err, script) => {
             if (err) {
               reject(err);
             } else {
-              resolve();
+              resolve(`${lang} script was loaded`);
             }
           });
         } else {
-          this.options.warningHandler(`Language "${lang}" is not supported. Check https://github.com/alibaba/react-intl-universal/releases/tag/1.12.0`);
-          resolve();
+          this.options.warningHandler(`Language "${lang}" is not supported.`);
         }
       } else {
         // For Node.js, common locales are added in the application
         resolve();
       }
     });
+
+    const jsonURL = localeJsonURL(lang);
+    const jsonPromise = new Promise((resolve, reject) => {
+      http
+        .get(jsonURL)
+        .then(response => {
+          this.load({ [lang]: response.data });
+          resolve(`${lang} json was loaded`);
+        })
+        .catch(err => reject(err));
+    });
+
+    return Promise.all([scriptPromise, jsonPromise]);
   }
 
   /**
@@ -291,13 +326,12 @@ class ReactIntlUniversal {
   }
 
   getDescendantProp(locale, key) {
-
     if (locale[key]) {
       return locale[key];
     }
 
-    const msg = key.split('.').reduce(function (a, b) {
-      return (a != undefined) ? a[b] : a;
+    const msg = key.split('.').reduce(function(a, b) {
+      return a != undefined ? a[b] : a;
     }, locale);
 
     return msg;
