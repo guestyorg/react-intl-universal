@@ -254,8 +254,29 @@ class ReactIntlUniversal {
     } else if (window && window.localStorage) {
       window.localStorage.removeItem('getLanguages');
     }
+    const { currentLocale, fallbackLocale } = this.options;
 
-    const lang = this.options.currentLocale;
+    return Promise.all([
+      this.loadRemoteLocale(currentLocale),
+      this.loadRemoteLocale(fallbackLocale),
+    ]);
+  }
+
+  /**
+   * Get the inital options
+   */
+  getInitOptions() {
+    return this.options;
+  }
+
+  /**
+   * Load more locales after init
+   */
+  load(locales) {
+    merge(this.options.locales, locales);
+  }
+
+  loadRemoteLocale(lang) {
     const locale = lang.split('-')[0].split('_')[0];
 
     const scriptPromise = new Promise((resolve, reject) => {
@@ -290,20 +311,6 @@ class ReactIntlUniversal {
     });
 
     return Promise.all([scriptPromise, jsonPromise]);
-  }
-
-  /**
-   * Get the inital options
-   */
-  getInitOptions() {
-    return this.options;
-  }
-
-  /**
-   * Load more locales after init
-   */
-  load(locales) {
-    merge(this.options.locales, locales);
   }
 
   getLocaleFromCookie(options) {
