@@ -285,10 +285,11 @@ class ReactIntlUniversal {
         if (localeURL) {
           load(localeURL, (err, script) => {
             if (err) {
-              reject(err);
-            } else {
-              resolve(`${lang} script was loaded`);
+              this.options.warningHandler(
+                `Language file "${lang}.js" was not loaded.`,
+              );
             }
+            resolve();
           });
         } else {
           this.options.warningHandler(`Language "${lang}" is not supported.`);
