@@ -12,13 +12,6 @@ import merge from 'lodash.merge';
 import isElectron from 'is-electron';
 import http from 'axios';
 
-const localeDataURL = locale =>
-  `https://s3.amazonaws.com/guesty-frontend-production/localization/${locale}.js`;
-
-// const localeJsonURL = lang =>
-// `https://guesty-frontend.s3.amazonaws.com/production/atomic-design/localesInit/locales1/${lang}.json`;
-const localeJsonURL = lang => `http://localhost:8000/?lang=${lang}`;
-
 const isBrowser =
   !isElectron() &&
   !!(
@@ -58,6 +51,8 @@ class ReactIntlUniversal {
       locales: {},
       // ability to accumulate missing messages using third party services like Sentry
       warningHandler: console.warn.bind(console),
+      // Common locales js urls
+      commonLocaleDataUrls: {},
       // disable escape html in variable mode
       escapeHtml: true,
       // Locale to use if a key is not found in the current locale
@@ -232,6 +227,8 @@ class ReactIntlUniversal {
     invariant(options.currentLocale, 'options.currentLocale is required');
     Object.assign(this.options, options);
 
+    const { currentLocale } = this.options;
+
     this.options.formats = Object.assign(
       {},
       this.options.formats,
@@ -254,12 +251,8 @@ class ReactIntlUniversal {
     } else if (window && window.localStorage) {
       window.localStorage.removeItem('getLanguages');
     }
-    const { currentLocale, fallbackLocale } = this.options;
 
-    return Promise.all([
-      this.loadRemoteLocale(currentLocale),
-      this.loadRemoteLocale(fallbackLocale),
-    ]);
+    return this.loadRemoteScript(currentLocale);
   }
 
   /**
@@ -276,11 +269,10 @@ class ReactIntlUniversal {
     merge(this.options.locales, locales);
   }
 
-  loadRemoteLocale(lang) {
+  loadRemoteScript(lang) {
     const locale = lang.split('-')[0].split('_')[0];
-
-    const scriptPromise = new Promise((resolve, reject) => {
-      const localeURL = localeDataURL(locale);
+    return new Promise((resolve, reject) => {
+      const localeURL = this.options.commonLocaleDataUrls[locale];
       if (isBrowser) {
         if (localeURL) {
           load(localeURL, (err, script) => {
@@ -299,19 +291,6 @@ class ReactIntlUniversal {
         resolve();
       }
     });
-
-    const jsonURL = localeJsonURL(lang);
-    const jsonPromise = new Promise((resolve, reject) => {
-      http
-        .get(jsonURL)
-        .then(response => {
-          this.load({ [lang]: response.data });
-          resolve(`${lang} json was loaded`);
-        })
-        .catch(err => reject(err));
-    });
-
-    return Promise.all([scriptPromise, jsonPromise]);
   }
 
   getLocaleFromCookie(options) {
