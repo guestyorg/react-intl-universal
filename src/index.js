@@ -16,7 +16,7 @@ const localeDataURL = locale =>
   `https://s3.amazonaws.com/guesty-frontend-production/localization/${locale}.js`;
 
 // const localeJsonURL = lang =>
-//   `https://guesty-frontend.s3.amazonaws.com/production/locales/${lang}.json`;
+// `https://guesty-frontend.s3.amazonaws.com/production/atomic-design/localesInit/locales1/${lang}.json`;
 const localeJsonURL = lang => `http://localhost:8000/?lang=${lang}`;
 
 const isBrowser =
