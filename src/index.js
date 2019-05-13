@@ -68,12 +68,12 @@ class ReactIntlUniversal {
   get(key, variables) {
     invariant(key, 'key is required');
     const { locales, currentLocale, formats, warningHandler } = this.options;
-    console.log({ warning: warningHandler });
 
     if (!locales || !locales[currentLocale]) {
-      this.options.warningHandler(
-        `react-intl-universal locales data "${currentLocale}" does not exist.`,
-      );
+      warningHandler &&
+        warningHandler(
+          `react-intl-universal locales data "${currentLocale}" does not exist.`,
+        );
 
       return '';
     }
@@ -84,11 +84,12 @@ class ReactIntlUniversal {
       if (this.options.fallbackLocale) {
         msg = this.getDescendantProp(locales[this.options.fallbackLocale], key);
         if (msg == null) {
-          this.options.warningHandler(
-            `react-intl-universal key "${key}" not defined in ${currentLocale} or the fallback locale, ${
-              this.options.fallbackLocale
-            }`,
-          );
+          warningHandler &&
+            warningHandler(
+              `react-intl-universal key "${key}" not defined in ${currentLocale} or the fallback locale, ${
+                this.options.fallbackLocale
+              }`,
+            );
           if (
             window &&
             window.localStorage &&
@@ -100,9 +101,10 @@ class ReactIntlUniversal {
           }
         }
       } else {
-        this.options.warningHandler(
-          `react-intl-universal key "${key}" not defined in ${currentLocale}`,
-        );
+        warningHandler &&
+          warningHandler(
+            `react-intl-universal key "${key}" not defined in ${currentLocale}`,
+          );
         if (
           window &&
           window.localStorage &&
@@ -135,10 +137,11 @@ class ReactIntlUniversal {
       const msgFormatter = new IntlMessageFormat(msg, currentLocale, formats);
       return msgFormatter.format(variables);
     } catch (err) {
-      this.options.warningHandler(
-        `react-intl-universal format message failed for key='${key}'.`,
-        err.message,
-      );
+      warningHandler &&
+        warningHandler(
+          `react-intl-universal format message failed for key='${key}'.`,
+          err.message,
+        );
       return msg;
     }
   }
@@ -271,20 +274,22 @@ class ReactIntlUniversal {
 
   loadRemoteScript(lang) {
     const locale = lang.split('-')[0].split('_')[0];
+    const { warningHandler } = this.options;
+
     return new Promise((resolve, reject) => {
       const localeURL = this.options.commonLocaleDataUrls[locale];
       if (isBrowser) {
         if (localeURL) {
           load(localeURL, (err, script) => {
             if (err) {
-              this.options.warningHandler(
-                `Language file "${lang}.js" was not loaded.`,
-              );
+              warningHandler &&
+                warningHandler(`Language file "${lang}.js" was not loaded.`);
             }
             resolve();
           });
         } else {
-          this.options.warningHandler(`Language "${lang}" is not supported.`);
+          warningHandler &&
+            warningHandler(`Language "${lang}" is not supported.`);
         }
       } else {
         // For Node.js, common locales are added in the application
