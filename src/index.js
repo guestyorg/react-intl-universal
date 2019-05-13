@@ -67,6 +67,9 @@ class ReactIntlUniversal {
    */
   get(key, variables) {
     invariant(key, 'key is required');
+    this.options.warningHandler('WHAT IS THIS');
+    console.log({ ops: this.options });
+    console.log('This is', { this: this });
     const { locales, currentLocale, formats } = this.options;
 
     if (!locales || !locales[currentLocale]) {
