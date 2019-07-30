@@ -25,9 +25,8 @@ String.prototype.defaultMessage = String.prototype.d = function(msg) {
     const newMsg = this.split('=');
     const body = { fields: {} };
     body.fields.message = { stringValue: msg };
-    const httpService = http.create();
+    const httpService = http.create({ headers: {} });
 
-    delete httpService.defaults.headers.common['g-aid-cs'];
     console.warn('Guesty translate:', this, newMsg[1], msg);
     httpService.patch(
       `https://firestore.googleapis.com/v1beta1/projects/guesty-18n/databases/(default)/documents/overall/${newMsg[1].trim()}`,
@@ -57,6 +56,7 @@ class ReactIntlUniversal {
       escapeHtml: true,
       // Locale to use if a key is not found in the current locale
       fallbackLocale: null,
+      // Logs
     };
   }
 
