@@ -1,0 +1,144 @@
+version: 2.1
+orbs:
+  slack: circleci/slack@2.5.1
+
+defaults: &defaults
+  working_directory: ~/package
+  docker:
+    - image: 'circleci/node:8.13.0'
+
+version_filter: &version_filter
+  tags:
+    only: /^v.*/
+
+branches_ignore: &branches_ignore
+  branches:
+    ignore: /.*/
+
+commands:
+  authenticate_npm:
+    description: 'Authenticate with Registry'
+    steps:
+      - run:
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+
+  install_deps:
+    description: 'Install all dependencies and use cache'
+    steps:
+      - authenticate_npm
+
+      - restore_cache:
+          name: Restore Yarn package cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+
+      - run:
+          name: 'Installing Yarn Pacakges'
+          command: yarn install --frozen-lockfile
+
+      - save_cache:
+          name: Save Yarn package cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - install_deps
+
+      - run:
+          name: 'Building bundle'
+          command: yarn build
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - lib
+
+  publish:
+    <<: *defaults
+    steps:
+      - checkout
+      - authenticate_npm
+      - attach_workspace:
+          at: ~/package
+
+      - run: |
+          regex=".*-alpha\.[0-9]"
+
+          if [[ ${CIRCLE_TAG} =~ $regex ]]
+          then
+            npm publish --tag prerelease
+          else
+            npm publish --tag stable
+          fi
+
+      - run: |
+          echo "export PACKAGE=$(cat package.json | grep name | awk -F: '{ print $2 }' | sed 's/[", ]//g')" >> $BASH_ENV
+
+      - slack/notify:
+          message: '*${PACKAGE}* ${CIRCLE_TAG} is out.'
+          color: '#7474EF'
+          webhook: ${SLACK_INFRA_WEBHOOK}
+          include_job_number_field: false
+          include_project_field: false
+          include_visit_job_action: false
+
+      - slack/status:
+          mentions: 'here'
+          success_message: '*${PACKAGE}* ${CIRCLE_TAG} is out.'
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - install_deps
+
+      - run:
+          name: Run Tests
+          command: yarn test
+
+  send_approval_notification:
+    <<: *defaults
+    steps:
+      - slack/approval:
+          message: Pending approval for release
+
+workflows:
+  build-test-and-publish:
+    jobs:
+      - test:
+          filters:
+            <<: *version_filter
+            branches:
+              only:
+                - master
+      - build:
+          requires:
+            - test
+          filters:
+            <<: *version_filter
+            <<: *branches_ignore
+      - hold:
+          type: approval
+          requires:
+            - build
+          filters:
+            <<: *version_filter
+            <<: *branches_ignore
+
+      - send_approval_notification:
+          requires:
+            - build
+          filters:
+            <<: *version_filter
+            <<: *branches_ignore
+
+      - publish:
+          requires:
+            - hold
+          filters:
+            <<: *version_filter
+            <<: *branches_ignore

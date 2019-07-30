@@ -44,6 +44,7 @@
     "react": "^0.14.9 || ^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
+    "@guestyci/ebisu": "^1.0.49",
     "babel-cli": "^6.2.0",
     "babel-eslint": "^7.1.1",
     "babel-jest": "^19.0.0",
