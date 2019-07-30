@@ -20,9 +20,7 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch --verbose --coverage",
     "clean": "rimraf coverage/ lib/",
-    "build": "rollup -c rollup.config.js",
-    "preversion": "npm run clean && npm run build && npm run test",
-    "prepublish": "npm run clean && npm run build"
+    "build": "rollup -c rollup.config.js"
   },
   "author": "chiawei.tcw@alibaba-inc.com",
   "license": "BSD-3-Clause",
