@@ -1,6 +1,6 @@
 {
   "name": "@guestyci/react-intl-universal",
-  "version": "3.0.4",
+  "version": "3.0.5-alpha.0",
   "description": "Internationalize React apps. Not only for React.Component but also for Vanilla JS.",
   "keywords": [
     "intl",
