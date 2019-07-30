@@ -49,14 +49,13 @@ class ReactIntlUniversal {
       // app locale data like {"en-US":{"key1":"value1"},"zh-CN":{"key1":"值1"}}
       locales: {},
       // ability to accumulate missing messages using third party services like Sentry
-      warningHandler: console.warn.bind(console),
+      warningHandler: null,
       // Common locales js urls
       commonLocaleDataUrls: {},
       // disable escape html in variable mode
       escapeHtml: true,
       // Locale to use if a key is not found in the current locale
       fallbackLocale: null,
-      // Logs
     };
   }
 
